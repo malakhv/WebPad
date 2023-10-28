@@ -210,11 +210,11 @@
 
     window.onclose = function winClose() {
         saveState();
-    }
+    };
 
     window.onbeforeunload = function winBeforeUnload() {
         saveState();
-    }
+    };
 
     function convertHtmlToRtf(html) {
   if (!(typeof html === "string" && html)) {
@@ -260,6 +260,42 @@
 
 </script>
 
+<!-- Text converters -->
+<script>
+
+    function textToRtf(text) {
+
+        function processHeader(header) {
+            console.log(header.tagName);
+            var result = "\\pard\\sa200\\sl276\\slmult1"; //qc\b\fs52 Header 1\fs22\b0\par"
+            if (header.style.textAlign == 'left') result += "\\ql";
+            if (header.style.textAlign == 'justify') result += "\\qj";
+            if (header.style.textAlign == 'center') result += "\\qc";
+            if (header.style.textAlign == 'right') result += "\\qr";
+            result += "\\b\\fs52 " + header.innerText + "\\fs22\\b0\\par";
+            return result;
+        }
+
+        var rtf = "{\\rtf1\\ansi\\ansicpg1251\\deff0\\deflang1049{\\fonttbl{\\f0\\fnil\\fcharset0 Calibri;}}";
+        rtf += "{\\*\\generator Msftedit 5.41.21.2510;}";
+        var tag;
+        for (let i = 0; i < VEditor.children.length; i++) {
+            tag = VEditor.children[i].tagName;
+            if (tag == 'H1') rtf += processHeader(VEditor.children[i]);
+            //console.log(rtf);
+            //const styles = window.getComputedStyle(VEditor.children[i])
+            //console.log(VEditor.children[i]);
+            //console.log(VEditor.children[i].tagName);
+            //console.log(VEditor.children[i].style.textAlign);
+            //console.log(styles);
+        }
+        console.log(rtf);
+        //alert(rtf);
+    };
+
+</script>
+
+
 <!-- Any test stuff -->
 <script>
 
@@ -267,6 +303,7 @@
         //alert(isWindowsOS());
         //VEditor.contentDocument.designMode = "on";
         //iframeNode.contentDocument.designMode = "on";
+        textToRtf();
     }
 
 </script>
