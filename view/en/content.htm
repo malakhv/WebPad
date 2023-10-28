@@ -197,7 +197,11 @@
     };
 
     function printDoc() {
+        var printContent = VEditor.innerHTML;
+        var originalContent = document.body.innerHTML;
+        document.body.innerHTML = printContent;
         window.print();
+        document.body.innerHTML = originalContent;
     }
 
     window.onchange = function winChange() {
