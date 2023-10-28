@@ -35,6 +35,13 @@
         execCmd('insertLineBreak');
     }
 
+    /**
+     * Returns true, if we current on Windows OS.
+     * */
+    function isWindowsOS() {
+        return window.navigator.platform === 'Win32';
+    }
+
 </script>
 
 <!-- Main script -->
@@ -101,7 +108,9 @@
             text = VEditor.innerText;
             //text = text.replace(/\n\n/g, '\n'); // ???
             // CRLF - Need to setting for it...
-            //text = text.replace(/\n/g, "\r\n");
+            if (isWindowsOS()) {
+                text = text.replace(/\n/g, "\r\n");
+            }
         }
 
         var link = document.createElement('a');
@@ -251,7 +260,7 @@
 <script>
 
     function justTest() {
-
+        alert(isWindowsOS());
     }
 
 </script>
