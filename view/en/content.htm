@@ -1,7 +1,7 @@
-<p class="noprint">
-    This is a simple notepad without text formatting (will be added later) and
-    with spell check feature. Notepad doesn't send the entered text anywhere,
-    but only saves it in a secure local storage.
+<p>
+    A simple web notepad (WebPad) with text formatting and spell check
+    feature. The WebPad doesn't send the entered text anywhere, but only
+    saves it in a secure local storage.
 </p>
 
 <!-- Common things -->
@@ -278,6 +278,7 @@
         <u>U</u></button>
     <button title="Strikethrough" onclick="execCmd('strikethrough');">
         <strike>S</strike></button>
+    <button title="Clear style" onclick="execCmd('removeFormat') ;">C</button>
     &nbsp;&nbsp;
     <!-- Insert (lists, line, data, etc) -->
     <button title="Unordered list" onclick="execCmd('insertUnorderedList');">
@@ -288,11 +289,28 @@
         -</button>
     <button title="Current date and time" onclick="insertDateTime()">
         Now</button>
-
-    <button title="Test" onclick="justTest()">Test</button>
+    &nbsp;&nbsp;
+    <!-- Headers -->
+    <button title="Line" onclick="document.execCommand('formatBlock', false, 'h1');">
+        H1</button>
+    <button title="Line" onclick="document.execCommand('formatBlock', false, 'h2');">
+        H2</button>
+    <button title="Line" onclick="document.execCommand('formatBlock', false, 'h3');">
+        H3</button>
+    &nbsp;&nbsp;
+    <!-- Justify -->
+    <button title="Align Left" onclick="execCmd('justifyLeft')">
+        L</button>
+    <button title="Align Center" onclick="execCmd('justifyCenter')">
+        C</button>
+    <button title="Align Right" onclick="execCmd('justifyRight')">
+        R</button>
+    <button title="Justify" onclick="execCmd('justifyFull')">
+        J</button>
 
 </td><td align="right">
-    <!-- Clear data -->
+    <button title="Test" onclick="justTest()">Test</button>&nbsp;&nbsp;
+    <!-- Clear text -->
     <button onclick="clearText()">Clear</button>
 </td></tr></table>
 

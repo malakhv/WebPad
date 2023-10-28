@@ -36,6 +36,34 @@
     /* word-wrap: break-word; */
 }
 
+.editable hr {
+    all: revert;
+}
+
+.editable h1 {
+    all: revert;
+}
+
+.editable h2 {
+    all: revert;
+}
+
+.editable h3 {
+    all: revert;
+}
+
+.editable ul {
+    all: revert;
+}
+
+.editable ol {
+    all: revert;
+}
+
+.editable li {
+    all: revert;
+}
+
 .controls {
     width: 100%;
 }

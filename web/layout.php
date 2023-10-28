@@ -15,7 +15,7 @@ function IncludeLayout($name) {
 function MakeHtmlHead($title = 'Mikhail Malakhov', $keywords = '', $description = '') {
     echo PHP_EOL;
     echo '<head>'.PHP_EOL;
-    echo '  <base href="http://mikhan.me/">'.PHP_EOL;
+    echo '  <base href="http://webpad.mikhan.me/">'.PHP_EOL;
     echo '  <meta name="keywords" content="'.$keywords.'" />'.PHP_EOL;
     echo '  <meta name="description" content="'.$description.'" />'.PHP_EOL;
     echo '  <meta http-equiv="content-type" content="text/html; charset=utf-8" />'.PHP_EOL;
