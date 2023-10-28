@@ -4,6 +4,7 @@
     but only saves it in a secure local storage.
 </p>
 
+<!-- Common things -->
 <script>
 
     /**
@@ -27,17 +28,26 @@
         document.execCommand('insertText', false, text);
     }
 
+    /**
+     * Inserts new line.
+     * */
+    function insertLineBreak() {
+        execCmd('insertLineBreak');
+    }
+
 </script>
 
+<!-- Main script -->
 <script>
 
     /** View: Editor. */
     const VIEW_EDITOR_ID = 'webpad-editor';
-    const VIEW_EDITOR_HEIGHT = 'webpad-editor-height';
+    //const VIEW_EDITOR_HEIGHT = 'webpad-editor-height';
     var VEditor;
 
     /** View: File formats. */
     const VIEW_FORMAT_ID = 'webpad-format';
+    var VFormat;
 
     /**
      * Saves WebPad state to local storage.
@@ -90,6 +100,8 @@
         } else {
             text = VEditor.innerText;
             //text = text.replace(/\n\n/g, '\n'); // ???
+            // CRLF - Need to setting for it...
+            //text = text.replace(/\n/g, "\r\n");
         }
 
         var link = document.createElement('a');
@@ -120,25 +132,53 @@
         insertText(str);
     }
 
-    function onKeyDown(event) {
-        if (event.key !== 'Tab') return false;
-        // Prevent default action of Tab key
-        event.preventDefault();
-        //var tabNode = this.ownerDocument.createTextNode("\t");
-        var tabNode = VEditor.ownerDocument.createTextNode('    ');
-        var sel = VEditor.getRootNode().getSelection();
-        if (!sel.rangeCount) return false;
-        var range = sel.getRangeAt(0);
+    function onKeyTab(event) {
+        /* var doc = VEditor.ownerDocument;
+        var tabNode = doc.createTextNode('    '); // "\t" ?
+        var selection = VEditor.getRootNode().getSelection();
+        if (!selection.rangeCount) return;
+        var range = selection.getRangeAt(0);
         range.insertNode(tabNode);
-        var newRange = document.createRange();
-        newRange.setStartAfter(tabNode);
-        newRange.setEndAfter(tabNode);
-        sel.removeAllRanges();
-        sel.addRange(newRange);
+        range = doc.createRange();
+        range.setStartAfter(tabNode);
+        range.setEndAfter(tabNode);
+        selection.removeAllRanges();
+        selection.addRange(range); */
+        insertText('    ');
     }
 
+    function onKeyEnter(event) {
+        /* var doc = VEditor.ownerDocument;
+        var node = doc.createElement('br');
+        var selection = VEditor.getRootNode().getSelection();
+        if (!selection.rangeCount) return;
+        var range = selection.getRangeAt(0);
+        range.insertNode(node);
+        range = doc.createRange();
+        range.setStartAfter(node);
+        range.setEndAfter(node);
+        selection.removeAllRanges();
+        selection.addRange(range); */
+        //insertLineBreak();
+        insertText('\n');
+    }
+
+    function onKeyDown(event) {
+        // Tab
+        if (event.key === 'Tab') {
+            event.preventDefault();
+            onKeyTab();
+        };
+        // Enter
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            onKeyEnter();
+        }
+        return false;
+    };
+
     window.onload = function winLoad() {
-        //document.execCommand('defaultParagraphSeparator', false, 'p');
+        document.execCommand('defaultParagraphSeparator', false, 'p');
         VEditor = document.getElementById(VIEW_EDITOR_ID);
         VFormat = document.getElementById(VIEW_FORMAT_ID);
         loadState();
@@ -207,6 +247,15 @@
 
 </script>
 
+<!-- Any test stuff -->
+<script>
+
+    function justTest() {
+
+    }
+
+</script>
+
 <!-- Text formatting controls and clear. -->
 <table class="controls" border="0"><tr>
 <td align="left">
@@ -230,6 +279,8 @@
         -</button>
     <button title="Current date and time" onclick="insertDateTime()">
         Now</button>
+
+    <button title="Test" onclick="justTest()">Test</button>
 
 </td><td align="right">
     <!-- Clear data -->
