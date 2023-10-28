@@ -1,0 +1,6 @@
+php_value auto_prepend_file "/home/srv44246/mikhan.me/web/engine.php"
+
+RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php

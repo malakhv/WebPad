@@ -1,0 +1,154 @@
+/* *
+ * Copyright (C) 1996-2022 Mikhail.Malakhov <malakhv@gmail.com>
+ *
+ * This file is a part of WebHome project.
+ *
+ * Confidential and Proprietary. All Rights Reserved.
+ *
+ * Unauthorized copying of this file, via any medium is strictly
+ * prohibited.
+ * */
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC",
+        "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+    font-size: 15px;
+    padding: 0 12px;
+    line-height: 22px;
+    word-wrap: break-word;
+    text-align: center;
+}
+
+h1 {
+    padding-bottom: 0.3em;
+    line-height: 1.2;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+    font-weight: normal;
+}
+
+hr {
+    border: 0;
+    line-height: 1.2;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid;
+}
+
+p.center {
+    text-align:center;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a.header {
+    color: inherit;
+    text-decoration: none;
+}
+
+a.header:hover {
+    text-decoration: none;
+}
+
+a.footer {
+    color: #777777;
+}
+
+img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+img.book-cover {
+    margin-right: 16px;
+    float: left;
+    height: 192px;
+}
+
+blockquote, pre {
+    padding: 0.1em 0.7em 0.1em 0.5em;
+}
+
+blockquote {
+    margin: 0em;
+    border-left-width: 5px;
+    border-left-style: solid;
+    background: rgba(127, 127, 127, 0.1);
+    border-color: rgba(127, 127, 127, 0.5);
+}
+
+pre {
+    background-color: #F8F8F8;
+    border: 1px solid #cccccc;
+    border-radius: 3px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    font-family: inherit;
+}
+
+code {
+    font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New",
+        monospace, "Droid Sans Fallback";
+    line-height: 0.5em;
+}
+
+ul.cats {
+    margin: 0px;
+}
+
+td {
+    vertical-align: top;
+}
+
+td th {
+    text-align: left;
+    vertical-align: top;
+}
+
+table.menu {
+    margin-top: -0.8em;
+    margin-bottom: -0.6em;
+    margin-left: auto; 
+    margin-right: auto;
+}
+
+.header-sup {
+    font-size: 0.7em;
+    font-style: italic;
+}
+
+.footer-a {
+    color: #777777;
+}
+
+#content {
+    display: inline-block;
+    padding-left: 1em;
+    padding-right: 1em;
+    max-width: 110ex;
+    min-width: 110ex;
+    text-align: justify;
+    background: white;
+    /* border: solid 1px #CCC;
+    box-shadow: 3px 3px 3px #ccc; */
+}
+
+#footer {
+    margin: 0 auto;
+    color: #777777;
+    page-break-after: always;
+}
+
+#form {
+    margin: 1em auto;
+    padding: 1em;
+}

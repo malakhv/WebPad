@@ -1,0 +1,264 @@
+<p class="noprint">
+    This is a simple notepad without text formatting (will be added later) and
+    with spell check feature. Notepad doesn't send the entered text anywhere,
+    but only saves it in a secure local storage.
+</p>
+
+<script>
+
+    /**
+     * Aligns the value with zeros.
+     * */
+    function leadingZero(count, val) {
+        return ('' + val).padStart(count, '0');
+    }
+
+    /**
+     * Executes document's command with default arguments.
+     * */
+    function execCmd(command) {
+        document.execCommand(command, false, null);
+    }
+
+    /**
+     * Inserts specified text to current position.
+     * */
+    function insertText(text) {
+        document.execCommand('insertText', false, text);
+    }
+
+</script>
+
+<script>
+
+    /** View: Editor. */
+    const VIEW_EDITOR_ID = 'webpad-editor';
+    const VIEW_EDITOR_HEIGHT = 'webpad-editor-height';
+    var VEditor;
+
+    /** View: File formats. */
+    const VIEW_FORMAT_ID = 'webpad-format';
+
+    /**
+     * Saves WebPad state to local storage.
+     * */
+    function saveState() {
+        var text = VEditor.innerHTML;
+        var format = VFormat.value;
+        localStorage.setItem(VEditor.id, text);
+        localStorage.setItem(VFormat.id, format);
+        console.log('WebPad - saveState');
+    }
+
+    /**
+     * Loads WebPad state from local storage.
+     * */
+    function loadState() {
+        var value = localStorage.getItem(VEditor.id);
+        if (value) VEditor.innerHTML = value;
+        //value = localStorage.getItem(VIEW_EDITOR_HEIGHT);
+        //if (value) VEditor.style.height = value + 'px';
+        value = localStorage.getItem(VFormat.id);
+        if (value) VFormat.value = value;
+        console.log('WebPad - loadState');
+    }
+
+    /**
+     * Clears entered text in Editor and local storage.
+     * */
+    function clearText() {
+        if (confirm('Are you sure you want to clear text?')) {
+            VEditor.innerHTML = '';
+            saveState();
+        }
+        console.log('WebPad - clearData');
+    }
+
+    function downloadFile() {
+        var text = '';
+        var format = VFormat.value;
+        var mime = 'plain';
+        
+        if (format == 'rtf' || format == 'htm') {
+            text = VEditor.innerHTML;
+            if (format == 'rtf') {
+                text = convertHtmlToRtf(text);
+                mime = 'rtf';
+            } else {
+                mime = 'html';
+            }
+        } else {
+            text = VEditor.innerText;
+            //text = text.replace(/\n\n/g, '\n'); // ???
+        }
+
+        var link = document.createElement('a');
+        link.download = 'my-note.' + format;
+        var data = new Blob([text], {
+            type: "text/" + mime
+        });
+        link.href = window.URL.createObjectURL(data);
+        link.click();
+        link.remove();
+    }
+
+    function insertDateTime() {
+
+        function format(val) {
+            return leadingZero(2, val);
+        }
+
+        var str = '[';
+        var now = new Date();
+
+        str += format(now.getDate()) + '.';
+        str += format(now.getMonth() + 1) + '.';
+        str += now.getFullYear() + ' - ';
+        str += format(now.getHours()) + ':';
+        str += format(now.getMinutes()) + ']';
+
+        insertText(str);
+    }
+
+    function onKeyDown(event) {
+        if (event.key !== 'Tab') return false;
+        // Prevent default action of Tab key
+        event.preventDefault();
+        //var tabNode = this.ownerDocument.createTextNode("\t");
+        var tabNode = VEditor.ownerDocument.createTextNode('    ');
+        var sel = VEditor.getRootNode().getSelection();
+        if (!sel.rangeCount) return false;
+        var range = sel.getRangeAt(0);
+        range.insertNode(tabNode);
+        var newRange = document.createRange();
+        newRange.setStartAfter(tabNode);
+        newRange.setEndAfter(tabNode);
+        sel.removeAllRanges();
+        sel.addRange(newRange);
+    }
+
+    window.onload = function winLoad() {
+        //document.execCommand('defaultParagraphSeparator', false, 'p');
+        VEditor = document.getElementById(VIEW_EDITOR_ID);
+        VFormat = document.getElementById(VIEW_FORMAT_ID);
+        loadState();
+        VEditor.addEventListener('keydown', function(event) {
+            onKeyDown(event);
+        });
+    };
+
+    function printDoc() {
+        window.print();
+    }
+
+    window.onchange = function winChange() {
+        saveState();
+    };
+
+    window.onclose = function winClose() {
+        saveState();
+    }
+
+    window.onbeforeunload = function winBeforeUnload() {
+        saveState();
+    }
+
+    function convertHtmlToRtf(html) {
+  if (!(typeof html === "string" && html)) {
+      return null;
+  }
+  var tmpRichText, hasHyperlinks;
+  var richText = html;
+  // Singleton tags
+  richText = richText.replace(/<(?:hr)(?:\s+[^>]*)?\s*[\/]?>/ig, "{\\pard \\brdrb \\brdrs \\brdrw10 \\brsp20 \\par}\n{\\pard\\par}\n");
+  richText = richText.replace(/<(?:br)(?:\s+[^>]*)?\s*[\/]?>/ig, "{\\pard\\par}\n");
+  // Empty tags
+  richText = richText.replace(/<(?:p|div|section|article)(?:\s+[^>]*)?\s*[\/]>/ig, "{\\pard\\par}\n");
+  richText = richText.replace(/<(?:[^>]+)\/>/g, "");
+  // Hyperlinks
+  richText = richText.replace(
+      /<a(?:\s+[^>]*)?(?:\s+href=(["'])(?:javascript:void\(0?\);?|#|return false;?|void\(0?\);?|)\1)(?:\s+[^>]*)?>/ig,
+      "{{{\n");
+  tmpRichText = richText;
+  richText = richText.replace(
+      /<a(?:\s+[^>]*)?(?:\s+href=(["'])(.+)\1)(?:\s+[^>]*)?>/ig,
+      "{\\field{\\*\\fldinst{HYPERLINK\n \"$2\"\n}}{\\fldrslt{\\ul\\cf1\n");
+  hasHyperlinks = richText !== tmpRichText;
+  richText = richText.replace(/<a(?:\s+[^>]*)?>/ig, "{{{\n");
+  richText = richText.replace(/<\/a(?:\s+[^>]*)?>/ig, "\n}}}");
+  // Start tags
+  richText = richText.replace(/<(?:b|strong)(?:\s+[^>]*)?>/ig, "{\\b\n");
+  richText = richText.replace(/<(?:i|em)(?:\s+[^>]*)?>/ig, "{\\i\n");
+  richText = richText.replace(/<(?:u|ins)(?:\s+[^>]*)?>/ig, "{\\ul\n");
+  richText = richText.replace(/<(?:strike|del)(?:\s+[^>]*)?>/ig, "{\\strike\n");
+  richText = richText.replace(/<sup(?:\s+[^>]*)?>/ig, "{\\super\n");
+  richText = richText.replace(/<sub(?:\s+[^>]*)?>/ig, "{\\sub\n");
+  richText = richText.replace(/<(?:p|div|section|article)(?:\s+[^>]*)?>/ig, "{\\pard\n");
+  // End tags
+  richText = richText.replace(/<\/(?:p|div|section|article)(?:\s+[^>]*)?>/ig, "\n\\par}\n");
+  richText = richText.replace(/<\/(?:b|strong|i|em|u|ins|strike|del|sup|sub)(?:\s+[^>]*)?>/ig, "\n}");
+  // Strip any other remaining HTML tags [but leave their contents]
+  richText = richText.replace(/<(?:[^>]+)>/g, "");
+  // Prefix and suffix the rich text with the necessary syntax
+  richText =
+      "{\\rtf1\\ansi\n" + (hasHyperlinks ? "{\\colortbl\n;\n\\red0\\green0\\blue255;\n}\n" : "") + richText +  "\n}";
+  return richText;
+}
+
+</script>
+
+<!-- Text formatting controls and clear. -->
+<table class="controls" border="0"><tr>
+<td align="left">
+
+    <!-- Text format (bold, italic, underline, etc) -->
+    <button title="Bold"onclick="execCmd('bold');">
+        <b>B</b></button>
+    <button title="Italic" onclick="execCmd('italic');">
+        <i>I</i></button>
+    <button title="Underline" onclick="execCmd('underline');">
+        <u>U</u></button>
+    <button title="Strikethrough" onclick="execCmd('strikethrough');">
+        <strike>S</strike></button>
+    &nbsp;&nbsp;
+    <!-- Insert (lists, line, data, etc) -->
+    <button title="Unordered list" onclick="execCmd('insertUnorderedList');">
+        &bull;-</button>
+    <button title="Ordered list" onclick="execCmd('insertOrderedList');">
+        1-</span></button>
+    <button title="Line" onclick="execCmd('insertHorizontalRule');">
+        -</button>
+    <button title="Current date and time" onclick="insertDateTime()">
+        Now</button>
+
+</td><td align="right">
+    <!-- Clear data -->
+    <button onclick="clearText()">Clear</button>
+</td></tr></table>
+
+<!-- VEditor -->
+<div class="editable" contenteditable="true" spellcheck="true"
+    id="webpad-editor" placeholder="Put your text here...">
+</div>
+
+<!-- Controls -->
+<table class="controls" border="0"><tr>
+
+<!-- Print -->
+<td align="left">
+    <button title="Print or save as PDF..." onclick="printDoc();">Print</button>
+</td>
+
+<td align="right">
+    <!-- VFormat -->
+    <select title="File format" name="webpad-format" id="webpad-format">
+        <option value="txt">Plain text</option>
+        <option value="rtf">Rich text</option>
+        <option value="md">Markdown</option>
+        <option value="htm">HTML markup</option>
+    </select>&nbsp;
+    <!-- Download -->
+    <button title="Download as file..." onclick="downloadFile();">Download</button>
+</td>
+
+</tr></table><br>
