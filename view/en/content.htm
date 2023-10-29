@@ -1,10 +1,6 @@
-<p>
-    A simple web notepad (WebPad) with text formatting and spell check
-    feature. The WebPad doesn't send the entered text anywhere, but only
-    saves it in a secure local storage.
-</p>
-
-<!-- Common things -->
+<!-------------------------------------------------------------------------
+    Common things
+-------------------------------------------------------------------------->
 <script>
 
     /**
@@ -36,6 +32,14 @@
     }
 
     /**
+     * Inserts an HTML block-level element around the line containing the
+     * current selection.
+     * */
+    function insertBlock(block) {
+        document.execCommand('formatBlock', false, block);
+    }
+
+    /**
      * Returns true, if we current on Windows OS.
      * */
     function isWindowsOS() {
@@ -44,12 +48,13 @@
 
 </script>
 
-<!-- Main script -->
+<!-------------------------------------------------------------------------
+    Main script
+-------------------------------------------------------------------------->
 <script>
 
     /** View: Editor. */
     const VIEW_EDITOR_ID = 'webpad-editor';
-    //const VIEW_EDITOR_HEIGHT = 'webpad-editor-height';
     var VEditor;
 
     /** View: File formats. */
@@ -64,7 +69,7 @@
         var format = VFormat.value;
         localStorage.setItem(VEditor.id, text);
         localStorage.setItem(VFormat.id, format);
-        console.log('WebPad - saveState');
+        console.log('WebPad: saveState');
     }
 
     /**
@@ -77,18 +82,18 @@
         //if (value) VEditor.style.height = value + 'px';
         value = localStorage.getItem(VFormat.id);
         if (value) VFormat.value = value;
-        console.log('WebPad - loadState');
+        console.log('WebPad: loadState');
     }
 
     /**
      * Clears entered text in Editor and local storage.
      * */
     function clearText() {
-        if (confirm('Are you sure you want to clear text?')) {
+        if (confirm('Are you sure you want to clear entered text?')) {
             VEditor.innerHTML = '';
             saveState();
         }
-        console.log('WebPad - clearData');
+        console.log('WebPad: clearData');
     }
 
     function downloadFile() {
@@ -123,6 +128,9 @@
         link.remove();
     }
 
+    /**
+     * Inserts date and time to current cursor position.
+     * */
     function insertDateTime() {
 
         function format(val) {
@@ -131,47 +139,53 @@
 
         var str = '[';
         var now = new Date();
-
         str += format(now.getDate()) + '.';
         str += format(now.getMonth() + 1) + '.';
         str += now.getFullYear() + ' - ';
         str += format(now.getHours()) + ':';
         str += format(now.getMinutes()) + ']';
-
         insertText(str);
     }
 
-    function onKeyTab(event) {
-        /* var doc = VEditor.ownerDocument;
-        var tabNode = doc.createTextNode('    '); // "\t" ?
-        var selection = VEditor.getRootNode().getSelection();
-        if (!selection.rangeCount) return;
-        var range = selection.getRangeAt(0);
-        range.insertNode(tabNode);
-        range = doc.createRange();
-        range.setStartAfter(tabNode);
-        range.setEndAfter(tabNode);
-        selection.removeAllRanges();
-        selection.addRange(range); */
-        insertText('    ');
+    /**
+     * Initializes necessary UI elements.
+     * */
+     function initUI() {
+        document.execCommand('defaultParagraphSeparator', false, 'p');
+        VEditor = document.getElementById(VIEW_EDITOR_ID);
+        VFormat = document.getElementById(VIEW_FORMAT_ID);
+        loadState();
+        VEditor.addEventListener('keydown', function(event) {
+            onKeyDown(event);
+        });
     }
 
-    function onKeyEnter(event) {
-        /* var doc = VEditor.ownerDocument;
-        var node = doc.createElement('br');
-        var selection = VEditor.getRootNode().getSelection();
-        if (!selection.rangeCount) return;
-        var range = selection.getRangeAt(0);
-        range.insertNode(node);
-        range = doc.createRange();
-        range.setStartAfter(node);
-        range.setEndAfter(node);
-        selection.removeAllRanges();
-        selection.addRange(range); */
-        //insertLineBreak();
-        insertText('\n');
+    /**
+     * Prints entered text. This function is different than browser
+     * feature, it prints only text from Editor.
+     * */
+     function printDoc() {
+        var printContent = VEditor.innerHTML;
+        var originalContent = document.body.innerHTML;
+        document.body.innerHTML = printContent;
+        window.print();
+        document.body.innerHTML = originalContent;
+        initUI();
     }
 
+    /**
+     * Key handler: Tab.
+     * */
+    function onKeyTab(event) { insertText('    '); }
+
+    /**
+     * Key handler: Enter.
+     * */
+    function onKeyEnter(event) { insertText('\n'); }
+
+    /**
+     * Key event: On key down.
+     * */
     function onKeyDown(event) {
         // Tab
         if (event.key === 'Tab') {
@@ -187,69 +201,38 @@
     };
 
     /**
-     * Initializes necessary UI elements.
-     * */
-    function initUI() {
-        document.execCommand('defaultParagraphSeparator', false, 'p');
-        VEditor = document.getElementById(VIEW_EDITOR_ID);
-        VFormat = document.getElementById(VIEW_FORMAT_ID);
-        loadState();
-        VEditor.addEventListener('keydown', function(event) {
-            onKeyDown(event);
-        });
-    }
-
-    /**
-     * Prints entered text. This function is different than browser
-     * feature, it prints only text from Editor.
-     * */
-    function printDoc() {
-        var printContent = VEditor.innerHTML;
-        var originalContent = document.body.innerHTML;
-        document.body.innerHTML = printContent;
-        window.print();
-        document.body.innerHTML = originalContent;
-        initUI();
-    }
-
-    /**
      * Window event: On load.
      * */
-    window.onload = function winLoad() {
-        initUI();
-    };
+    window.onload = function winLoad() { initUI(); };
 
     /**
      * Window event: On change.
      * */
-    window.onchange = function winChange() {
-        saveState();
-    };
+    window.onchange = function winChange() { saveState(); };
 
     /**
      * Window event: On close.
      * */
-    window.onclose = function winClose() {
-        saveState();
-    };
+    window.onclose = function winClose() { saveState(); };
 
     /**
      * Window event: Before unload (reload).
      * */
-    window.onbeforeunload = function winBeforeUnload() {
-        saveState();
-    };
+    window.onbeforeunload = function winBeforeUnload() { saveState(); };
 
 </script>
 
-<!-- Text converters -->
+
+<!-------------------------------------------------------------------------
+    Text tools
+-------------------------------------------------------------------------->
 <script>
 
     function textToRtf(text) {
 
         function processHeader(header) {
             console.log(header.tagName);
-            var result = "\\pard\\sa200\\sl276\\slmult1"; //qc\b\fs52 Header 1\fs22\b0\par"
+            var result = "\\pard\\sa200\\sl276\\slmult1";
             if (header.style.textAlign == 'left') result += "\\ql";
             if (header.style.textAlign == 'justify') result += "\\qj";
             if (header.style.textAlign == 'center') result += "\\qc";
@@ -258,7 +241,8 @@
             return result;
         }
 
-        var rtf = "{\\rtf1\\ansi\\ansicpg1251\\deff0\\deflang1049{\\fonttbl{\\f0\\fnil\\fcharset0 Calibri;}}";
+        var rtf = "{\\rtf1\\ansi\\ansicpg1251\\deff0\\deflang1049" +
+            "{\\fonttbl{\\f0\\fnil\\fcharset0 Calibri;}}";
         rtf += "{\\*\\generator Msftedit 5.41.21.2510;}";
         var tag;
         for (let i = 0; i < VEditor.children.length; i++) {
@@ -277,8 +261,9 @@
 
 </script>
 
-
-<!-- Any test stuff -->
+<!-------------------------------------------------------------------------
+    Any test stuff
+-------------------------------------------------------------------------->
 <script>
 
     function justTest() {
@@ -289,6 +274,16 @@
     }
 
 </script>
+
+<!-------------------------------------------------------------------------
+    Page content
+-------------------------------------------------------------------------->
+
+<p>
+    A simple web notepad (WebPad) with text formatting and spell check
+    feature. The WebPad doesn't send the entered text anywhere, but only
+    saves it in a secure local storage.
+</p>
 
 <!-- Text formatting controls and clear. -->
 <table class="controls" border="0"><tr>
@@ -303,11 +298,12 @@
         <u>U</u></button>
     <button title="Strikethrough" onclick="execCmd('strikethrough');">
         <strike>S</strike></button>
-    <button title="Clear style" onclick="execCmd('removeFormat') ;">C</button>
+    <button title="Clear style" onclick="execCmd('removeFormat') ;">
+        C</button>
     &nbsp;&nbsp;
     <!-- Insert (lists, line, data, etc) -->
-    <button title="Unordered list" onclick="execCmd('insertUnorderedList');">
-        &bull;-</button>
+    <button title="Unordered list"
+        onclick="execCmd('insertUnorderedList');">&bull;-</button>
     <button title="Ordered list" onclick="execCmd('insertOrderedList');">
         1-</span></button>
     <button title="Line" onclick="execCmd('insertHorizontalRule');">
@@ -315,14 +311,13 @@
     <button title="Current date and time" onclick="insertDateTime()">
         Now</button>
     &nbsp;&nbsp;
+
     <!-- Headers -->
-    <button title="Line" onclick="document.execCommand('formatBlock', false, 'h1');">
-        H1</button>
-    <button title="Line" onclick="document.execCommand('formatBlock', false, 'h2');">
-        H2</button>
-    <button title="Line" onclick="document.execCommand('formatBlock', false, 'h3');">
-        H3</button>
+    <button title="Header 1" onclick="insertBlock('h1');">H1</button>
+    <button title="Header 2" onclick="insertBlock('h2');">H2</button>
+    <button title="Header 3" onclick="insertBlock('h3');">H3</button>
     &nbsp;&nbsp;
+
     <!-- Justify -->
     <button title="Align Left" onclick="execCmd('justifyLeft')">
         L</button>
@@ -349,7 +344,8 @@
 
 <!-- Print -->
 <td align="left">
-    <button title="Print or save as PDF..." onclick="printDoc();">Print</button>
+    <button title="Print or save as PDF..." onclick="printDoc();">
+        Print</button>
 </td>
 
 <td align="right">
@@ -361,7 +357,12 @@
         <option value="htm">HTML markup</option>
     </select>&nbsp;
     <!-- Download -->
-    <button title="Download as file..." onclick="downloadFile();">Download</button>
+    <button title="Download as file..." onclick="downloadFile();">
+        Download</button>
 </td>
 
 </tr></table><br>
+
+<!-------------------------------------------------------------------------
+    END
+-------------------------------------------------------------------------->
