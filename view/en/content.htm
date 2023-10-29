@@ -186,7 +186,10 @@
         return false;
     };
 
-    window.onload = function winLoad() {
+    /**
+     * Initializes necessary UI elements.
+     * */
+    function initUI() {
         document.execCommand('defaultParagraphSeparator', false, 'p');
         VEditor = document.getElementById(VIEW_EDITOR_ID);
         VFormat = document.getElementById(VIEW_FORMAT_ID);
@@ -194,24 +197,45 @@
         VEditor.addEventListener('keydown', function(event) {
             onKeyDown(event);
         });
-    };
+    }
 
+    /**
+     * Prints entered text. This function is different than browser
+     * feature, it prints only text from Editor.
+     * */
     function printDoc() {
         var printContent = VEditor.innerHTML;
         var originalContent = document.body.innerHTML;
         document.body.innerHTML = printContent;
         window.print();
         document.body.innerHTML = originalContent;
+        initUI();
     }
 
+    /**
+     * Window event: On load.
+     * */
+    window.onload = function winLoad() {
+        initUI();
+    };
+
+    /**
+     * Window event: On change.
+     * */
     window.onchange = function winChange() {
         saveState();
     };
 
+    /**
+     * Window event: On close.
+     * */
     window.onclose = function winClose() {
         saveState();
     };
 
+    /**
+     * Window event: Before unload (reload).
+     * */
     window.onbeforeunload = function winBeforeUnload() {
         saveState();
     };
