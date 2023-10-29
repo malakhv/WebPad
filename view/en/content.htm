@@ -165,13 +165,15 @@
      * feature, it prints only text from Editor.
      * */
      function printDoc() {
-        // We should save current state before change a page content
+        // We should save current state before change
+        // a page content
         saveState();
         var printContent = VEditor.innerHTML;
         var originalContent = document.body.innerHTML;
         document.body.innerHTML = printContent;
         window.print();
         document.body.innerHTML = originalContent;
+        // Page content was changed, let's reinit UI.
         initUI();
     }
 
