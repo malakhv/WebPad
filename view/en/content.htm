@@ -147,6 +147,15 @@
         insertText(str);
     }
 
+    function setTextColor() {
+        var e = document.getElementById("webpad-text-color");
+        var val = e.value;
+        document.execCommand('styleWithCSS', false, true);
+	    document.execCommand('foreColor', false, val);
+	    document.execCommand('styleWithCSS', false, false);
+        e.selectedIndex = 0;
+    }
+
     /**
      * Initializes necessary UI elements.
      * */
@@ -306,6 +315,39 @@
         X<sup>y</sup></button>
     <button title="Subscript" onclick="execCmd('subscript');">
         X<sub>y</sub></button>
+
+    <select title="Text Color" name="webpad-text-color" id="webpad-text-color"
+            onchange="setTextColor();">
+        <option value="#000000" style="background-color: #000000; color: white;">Black</option>
+        <option value="#FF0000" style="background-color: #FF0000;" >Red</option>
+        <option value="#DC143C" style="background-color: #DC143C;">Crimson</option>
+        <option value="#B22222" style="background-color: #B22222;">Firebrick</option>
+        <option value="#8B0000" style="background-color: #8B0000;">DarkRed</option>
+        <option value="#FFA500" style="background-color: #FFA500;">Orange</option>
+        <option value="#FFD700" style="background-color: #FFD700;">Gold</option>
+        <option value="#FFFF00" style="background-color: #FFFF00;">Yellow</option>
+        <option value="#F0E68C" style="background-color: #F0E68C;">Khaki</option>
+        <option value="#000080" style="background-color: #000080; color: white;">Navy</option>
+        <option value="#0000CD" style="background-color: #0000CD; color: white;">MediumBlue</option>
+        <option value="#0000FF" style="background-color: #0000FF; color: white;">Blue</option>
+        <option value="#1E90FF" style="background-color: #1E90FF; color: white;">DodgerBlue</option>
+        <option value="#006400" style="background-color: #006400;">DarkGreen</option>
+        <option value="#008000" style="background-color: #008000;">Green</option>
+        <option value="#228B22" style="background-color: #228B22;">ForestGreen</option>
+        <option value="#32CD32" style="background-color: #32CD32;">LimeGreen</option>
+        <option value="#00FF00" style="background-color: #00FF00;">Lime</option>
+        <option value="#7FFF00" style="background-color: #7FFF00;">Chartreuse</option>
+        <option value="#98FB98" style="background-color: #98FB98;">PaleGreen</option>
+        <option value="#FF1493" style="background-color: #FF1493;">DeepPink</option>
+        <option value="#FF69B4" style="background-color: #FF69B4;">HotPink</option>
+        <option value="#FFC0CB" style="background-color: #FFC0CB;">Pink</option>
+        <option value="#4B0082" style="background-color: #4B0082; color: white;">Indigo</option>
+        <option value="#800080" style="background-color: #800080; color: white;">Purple</option>
+        <option value="#9400D3" style="background-color: #9400D3;">DarkViolet</option>
+        <option value="#FF00FF" style="background-color: #FF00FF;">Magenta</option>
+        <option value="#EE82EE" style="background-color: #EE82EE;">Violet</option>
+    </select>&nbsp;
+
     <!-- Clear text format -->
     <button title="Clear format" onclick="execCmd('removeFormat');">
         C</button>
